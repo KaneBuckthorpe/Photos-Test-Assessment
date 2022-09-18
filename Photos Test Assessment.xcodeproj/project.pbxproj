@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F40DB6A28D6EADC00FB290E /* UICollectionViewDiffableDataSource+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40DB6928D6EADC00FB290E /* UICollectionViewDiffableDataSource+.swift */; };
 		6F76F9B228B1C35900C82164 /* UICollectionViewCompositionalLayout+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F76F9B128B1C35900C82164 /* UICollectionViewCompositionalLayout+.swift */; };
 		6F76F9B528B28C2900C82164 /* UserPhotosListProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F76F9B428B28C2900C82164 /* UserPhotosListProvider.swift */; };
 		6F76F9B828B2D0E000C82164 /* PhotoViewerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F76F9B728B2D0E000C82164 /* PhotoViewerViewController.swift */; };
@@ -28,7 +29,7 @@
 		6FCFCC5F28B1A0A700500695 /* UIView+Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCFCC5E28B1A0A700500695 /* UIView+Layout.swift */; };
 		6FCFCC6128B1A0E500500695 /* UIViewController+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCFCC6028B1A0E400500695 /* UIViewController+.swift */; };
 		6FCFCC6528B1A1EF00500695 /* PhotosFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCFCC6428B1A1EF00500695 /* PhotosFlow.swift */; };
-		6FCFCC6B28B1B37900500695 /* PhotosGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCFCC6A28B1B37900500695 /* PhotosGridCell.swift */; };
+		6FCFCC6B28B1B37900500695 /* GridPhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FCFCC6A28B1B37900500695 /* GridPhotoView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6F40DB6928D6EADC00FB290E /* UICollectionViewDiffableDataSource+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionViewDiffableDataSource+.swift"; sourceTree = "<group>"; };
 		6F76F9B128B1C35900C82164 /* UICollectionViewCompositionalLayout+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionViewCompositionalLayout+.swift"; sourceTree = "<group>"; };
 		6F76F9B428B28C2900C82164 /* UserPhotosListProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPhotosListProvider.swift; sourceTree = "<group>"; };
 		6F76F9B728B2D0E000C82164 /* PhotoViewerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoViewerViewController.swift; sourceTree = "<group>"; };
@@ -74,7 +76,7 @@
 		6FCFCC5E28B1A0A700500695 /* UIView+Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Layout.swift"; sourceTree = "<group>"; };
 		6FCFCC6028B1A0E400500695 /* UIViewController+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+.swift"; sourceTree = "<group>"; };
 		6FCFCC6428B1A1EF00500695 /* PhotosFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosFlow.swift; sourceTree = "<group>"; };
-		6FCFCC6A28B1B37900500695 /* PhotosGridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosGridCell.swift; sourceTree = "<group>"; };
+		6FCFCC6A28B1B37900500695 /* GridPhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridPhotoView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,6 +210,7 @@
 				6FCFCC5E28B1A0A700500695 /* UIView+Layout.swift */,
 				6FCFCC6028B1A0E400500695 /* UIViewController+.swift */,
 				6F76F9B128B1C35900C82164 /* UICollectionViewCompositionalLayout+.swift */,
+				6F40DB6928D6EADC00FB290E /* UICollectionViewDiffableDataSource+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -233,7 +236,7 @@
 			isa = PBXGroup;
 			children = (
 				6FCFCC2D28B197C500500695 /* PhotosGridViewController.swift */,
-				6FCFCC6A28B1B37900500695 /* PhotosGridCell.swift */,
+				6FCFCC6A28B1B37900500695 /* GridPhotoView.swift */,
 			);
 			path = PhotosGrid;
 			sourceTree = "<group>";
@@ -369,7 +372,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F76F9BA28B2D10200C82164 /* UserPhotoProvider.swift in Sources */,
-				6FCFCC6B28B1B37900500695 /* PhotosGridCell.swift in Sources */,
+				6FCFCC6B28B1B37900500695 /* GridPhotoView.swift in Sources */,
 				6F76F9C128B3E02A00C82164 /* PhotoViewImageContentMode.swift in Sources */,
 				6FCFCC6528B1A1EF00500695 /* PhotosFlow.swift in Sources */,
 				6FCFCC2E28B197C500500695 /* PhotosGridViewController.swift in Sources */,
@@ -384,6 +387,7 @@
 				6FCFCC2C28B197C500500695 /* SceneDelegate.swift in Sources */,
 				6F76F9B228B1C35900C82164 /* UICollectionViewCompositionalLayout+.swift in Sources */,
 				6FCFCC5B28B1A03400500695 /* NSLayoutDimension+.swift in Sources */,
+				6F40DB6A28D6EADC00FB290E /* UICollectionViewDiffableDataSource+.swift in Sources */,
 				6FCFCC6128B1A0E500500695 /* UIViewController+.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

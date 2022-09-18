@@ -9,7 +9,7 @@ import UIKit
 
 protocol PhotosGridImagesProvider {
     var numberOfImages: Int { get }
-    func imageForItem(_ number: Int, targetSize: CGSize, completion:  @escaping (UIImage?, Int) -> Void)
+    func imageForItem(_ number: Int, targetSize: CGSize, completion: @escaping (UIImage?, Int) -> Void)
     
     func load() async throws
 }
@@ -19,7 +19,9 @@ class PhotosGridViewController: UIViewController {
     typealias Snapshot = NSDiffableDataSourceSnapshot<String, Int>
     
     private lazy var collectionView = makeCollectionView()
-    private lazy var dataSource = makeDataSource()
+    private lazy var dataSource = DataSource(collectionView: collectionView,
+                                             cellRegistrationHandler: cellRegistrationHandler)
+
 
     private let imageProvider: PhotosGridImagesProvider
     
@@ -86,30 +88,16 @@ extension PhotosGridViewController {
         return collectionView
     }
     
-    private func makeDataSource() -> DataSource {
-        let photosCellRegistration = PhotosGridCellRegistration<Int> { [weak self] cell, indexPath, itemIdentifier in
-            guard let self = self else { return }
-            
-            cell.imageView.image = nil
-    
-            let targetSize = ImageSizeScaler.imageSize(for: cell)
-            
-            self.imageProvider.imageForItem(itemIdentifier, targetSize: targetSize) { [weak cell] (image, number) in
-                guard number == itemIdentifier else { return }
-                DispatchQueue.main.async {
-                    cell?.imageView.image = image
-                }
+    private func cellRegistrationHandler(cell: UICollectionViewCell, indexPath: IndexPath, id: Int) {
+        let targetSize = ImageSizeScaler.imageSize(for: cell)
+
+        self.imageProvider.imageForItem(id, targetSize: targetSize) { [weak cell] (image, number) in
+            guard number == id, let cell else { return }
+            DispatchQueue.main.async {
+                var configuration = GridPhotoContentConfig()
+                configuration.image = image
+                cell.contentConfiguration = configuration
             }
         }
-        
-        let cellProvider: DataSource.CellProvider = { collectionView, indexPath, item in
-            collectionView.dequeueConfiguredReusableCell(
-                using: photosCellRegistration,
-                for: indexPath,
-                item: item
-            )
-        }
-        
-        return DataSource(collectionView: collectionView, cellProvider: cellProvider)
     }
 }
