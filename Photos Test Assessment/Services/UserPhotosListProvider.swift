@@ -26,7 +26,7 @@ class UserPhotosListProvider: PhotosGridImagesProvider {
     
     var numberOfImages: Int { allPhotos.count }
     
-    init(cache: PHCachingImageManager = .init()) {
+    init(cache: PHCachingImageManager) {
         self.cache = cache
     }
     
@@ -34,14 +34,18 @@ class UserPhotosListProvider: PhotosGridImagesProvider {
         try await requestPhotosAccess()
     }
     
-    func assetForItem(number: Int) -> PHAsset {
-        allPhotos.object(at: number)
+    func assetForItem(index: Int) -> PHAsset {
+        allPhotos[index]
     }
     
-    func imageForItem(_ number: Int, targetSize: CGSize, completion: @escaping (UIImage?, Int) -> Void) {
-        let asset = assetForItem(number: number)
+    func identifierForItem(index: Int) -> String {
+        allPhotos[index].localIdentifier
+    }
+    
+    func imageForItem(_ index: Int, targetSize: CGSize, completion: @escaping (UIImage?, Int) -> Void) {
+        let asset = assetForItem(index: index)
         cache.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: nil) { image, _ in
-            completion(image, number)
+            completion(image, index)
         }
     }
 }

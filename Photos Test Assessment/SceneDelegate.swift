@@ -10,8 +10,8 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-    lazy var appFlow = PhotosFlow()
-
+    lazy var appFlow = PhotosRouter(navigationController: UINavigationController(),
+                                    factory: PhotosUIFactory())
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
@@ -30,5 +30,6 @@ extension SceneDelegate {
         window?.windowScene = windowScene
         window?.rootViewController = appFlow.navigationController
         window?.makeKeyAndVisible()
+        appFlow.start()
     }
 }

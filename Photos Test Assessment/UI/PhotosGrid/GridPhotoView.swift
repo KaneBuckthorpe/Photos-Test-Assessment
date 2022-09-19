@@ -50,5 +50,4 @@ class GridPhotoView: UIView, UIContentView {
         guard let configuration = configuration as? GridPhotoContentConfig else { return }
         self.imageView.image = configuration.image
     }
-    
 }

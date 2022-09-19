@@ -10,7 +10,7 @@ import UIKit
 protocol PhotosGridImagesProvider {
     var numberOfImages: Int { get }
     func imageForItem(_ number: Int, targetSize: CGSize, completion: @escaping (UIImage?, Int) -> Void)
-    
+    func identifierForItem(index: Int) -> String
     func load() async throws
 }
 
@@ -25,7 +25,7 @@ class PhotosGridViewController: UIViewController {
 
     private let imageProvider: PhotosGridImagesProvider
     
-    var photoTapHandler: ((Int) -> Void)?
+    var photoTapHandler: ((String) -> Void)?
     var errorHandler: ((Error) -> Void)?
     
     init(imageProvider: PhotosGridImagesProvider) {
@@ -73,7 +73,8 @@ class PhotosGridViewController: UIViewController {
 extension PhotosGridViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let imageNumber = dataSource.itemIdentifier(for: indexPath) else { return }
-        photoTapHandler?(imageNumber)
+        let id = imageProvider.identifierForItem(index: imageNumber)
+        photoTapHandler?(id)
     }
 }
 
