@@ -10,42 +10,56 @@ import Photos
 
 enum UserPhotosThumbnailsProviderError: Error {
     case invalidPhotosAuthorization
+    case phAssetNotFound
 }
 
 class UserPhotosListProvider: PhotosGridImagesProvider {
-    
     let cache: PHCachingImageManager
     
-    private lazy var allPhotos: PHFetchResult = {
-        let mostRecentMedia = PHFetchOptions()
-        mostRecentMedia.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        mostRecentMedia.fetchLimit = 1000
-        let allPhotos = PHAsset.fetchAssets(with: .image, options: mostRecentMedia)
-        return allPhotos
+    private lazy var allPhotos: PHFetchResultCollection = {
+        let fetchOptions = PHFetchOptions()
+        fetchOptions.includeHiddenAssets = false
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        fetchOptions.fetchLimit = 1000
+        let allPhotos = PHAsset.fetchAssets(with: .image, options: fetchOptions)
+        return PHFetchResultCollection(fetchResult: allPhotos)
     }()
     
-    var numberOfImages: Int { allPhotos.count }
+    private var photoIdentifiers: [String] { allPhotos.map(\.localIdentifier).reversed() }
     
     init(cache: PHCachingImageManager) {
         self.cache = cache
     }
     
-    func load() async throws {
+    func fetchPhotoIdentifiers() async throws -> [String] {
         try await requestPhotosAccess()
+        return photoIdentifiers
     }
-    
-    func assetForItem(index: Int) -> PHAsset {
-        allPhotos[index]
-    }
-    
-    func identifierForItem(index: Int) -> String {
-        allPhotos[index].localIdentifier
-    }
-    
-    func imageForItem(_ index: Int, targetSize: CGSize, completion: @escaping (UIImage?, Int) -> Void) {
-        let asset = assetForItem(index: index)
-        cache.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFill, options: nil) { image, _ in
-            completion(image, index)
+
+    func imageForItem(_ identifier: String, targetSize: CGSize) async throws -> (UIImage?) {
+        guard let asset = allPhotos.first(where: { $0.localIdentifier == identifier }) else {
+            throw UserPhotosThumbnailsProviderError.phAssetNotFound
+        }
+        let options = PHImageRequestOptions()
+        options.deliveryMode = .opportunistic
+        options.resizeMode = .fast
+        options.isNetworkAccessAllowed = true
+        options.isSynchronous = true
+        
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
+            self?.cache.requestImage(
+                for: asset,
+                targetSize: targetSize,
+                contentMode: .aspectFill,
+                options: options,
+                resultHandler: { image, info in
+                    if let error = info?[PHImageErrorKey] as? Error {
+                        continuation.resume(throwing: error)
+                        return
+                    }
+                    continuation.resume(returning: image)
+                }
+            )
         }
     }
 }
@@ -54,7 +68,7 @@ extension UserPhotosListProvider {
     private func requestPhotosAccess() async throws {
         let authorization = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
         switch authorization {
-        case .limited, .authorized:
+        case .authorized:
             if let accessError = PHPhotoLibrary.shared().unavailabilityReason {
                 throw accessError
             }

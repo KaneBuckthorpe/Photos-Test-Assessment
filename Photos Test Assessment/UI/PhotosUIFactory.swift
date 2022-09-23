@@ -8,7 +8,7 @@
 import UIKit
 import class Photos.PHCachingImageManager
 
-class PhotosUIFactory: PhotosViewControllerFactoryProtocol {
+struct PhotosUIFactory: PhotosViewControllerFactoryProtocol {
 
     let imageCache = PHCachingImageManager()
 
