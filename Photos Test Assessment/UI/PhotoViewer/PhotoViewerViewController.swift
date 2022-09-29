@@ -97,7 +97,7 @@ class PhotoViewerViewController: UIViewController {
             imageView.frame = containerBounds
         case .scaleAspectFill:
             guard let image = imageView.image else { return }
-            imageView.frame = uiHelper.aspectScaledToFillFrame(for: image, inVisbleRect: containerBounds)
+            imageView.frame = image.size.aspectFillRect(for: containerBounds.size)
         }
     }
     
@@ -132,7 +132,7 @@ class PhotoViewerViewController: UIViewController {
 
 extension PhotoViewerViewController {
     private func updateSalientRegion() {
-        
+
         salientRegionView.frame = uiHelper.visibleImageRect(
             container: container,
             contentMode: imageContentMode,

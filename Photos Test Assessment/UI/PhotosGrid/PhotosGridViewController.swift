@@ -7,9 +7,9 @@
 
 import UIKit
 
-protocol PhotosGridImagesProvider {
-    func imageForItem(_ identifier: String, targetSize: CGSize) async throws -> (UIImage?)
-    func fetchPhotoIdentifiers() async throws -> [String]
+protocol PhotosGridImagesService {
+    func image(for identifier: String, targetSize: CGSize) async throws -> (UIImage?)
+    func loadPhotoIdentifiers() async throws -> [String]
 }
 
 class PhotosGridViewController: UIViewController {
@@ -20,15 +20,15 @@ class PhotosGridViewController: UIViewController {
     private lazy var dataSource = DataSource(collectionView: collectionView,
                                              cellRegistrationHandler: cellRegistrationHandler)
 
-    private let imageProvider: PhotosGridImagesProvider
+    private let service: PhotosGridImagesService
     
     var photoTapHandler: ((String) -> Void)?
     var errorHandler: ((Error) -> Void)?
     
-    private let imageCache = NSCache<NSString, UIImage>()
+    private let imageCache = Cache<String, UIImage>()
     
-    init(imageProvider: PhotosGridImagesProvider) {
-        self.imageProvider = imageProvider
+    init(imageProvider: PhotosGridImagesService) {
+        self.service = imageProvider
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -45,12 +45,13 @@ class PhotosGridViewController: UIViewController {
     }
     
     private func loadData() {
-        Task {
+        Task.detached(priority: .userInitiated) { [weak self] in
+            guard let self else { return }
             do {
-                let photoIdentifiers = try await imageProvider.fetchPhotoIdentifiers()
-                updateGridUI(photoIdentifiers: photoIdentifiers)
+                let photoIdentifiers = try await self.service.loadPhotoIdentifiers()
+                await self.updateGridUI(photoIdentifiers: photoIdentifiers)
             } catch(let error) {
-                errorHandler?(error)
+                await self.errorHandler?(error)
             }
         }
     }
@@ -83,28 +84,27 @@ extension PhotosGridViewController {
     }
     
     private func cellRegistrationHandler(cell: UICollectionViewCell, indexPath: IndexPath, id: String) {
-        let image = imageCache.object(forKey: NSString(string: id))
+        let image = imageCache[id]
         var background = cell.defaultBackgroundConfiguration()
         background.imageContentMode = .scaleAspectFill
         background.image = image
         cell.backgroundConfiguration = background
         
-        Task { [weak cell] in
-            guard let cell, image == nil else { return }
+        Task.detached(priority: .userInitiated) { [weak self, weak cell] in
+            guard let self, let cell, image == nil else { return }
             do {
-                try await loadCellImage(for: id, cell: cell)
-                updateCell(id: id)
+                try await self.loadCellImage(for: id, cell: cell)
+                await self.updateCell(id: id)
             } catch {
-                errorHandler?(error)
+                await self.errorHandler?(error)
             }
         }
     }
     
-    private func loadCellImage(for photoId: String, cell: UICollectionViewCell) async throws {
-        let targetSize = ImageSizeScaler.imageSize(for: cell)
-        if let image = try await imageProvider.imageForItem(photoId, targetSize: targetSize) {
-            imageCache.setObject(image, forKey: NSString(string: photoId))
-        }
+    private nonisolated func loadCellImage(for photoId: String, cell: UICollectionViewCell) async throws {
+        let targetSize = await ImageSizeScaler.imageSize(for: cell)
+        guard let image = try await service.image(for: photoId, targetSize: targetSize) else { return }
+        imageCache[photoId] = image
     }
     
     private func updateCell(id: String) {

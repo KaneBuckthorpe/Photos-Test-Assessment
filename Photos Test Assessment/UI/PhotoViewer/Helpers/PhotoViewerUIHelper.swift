@@ -6,39 +6,14 @@
 //
 
 import UIKit
-import func AVFoundation.AVMakeRect
 
-enum PhotoViewerUIHelper {
-    static func aspectScaledToFillFrame(for image: UIImage, inVisbleRect visibleRect: CGRect) -> CGRect {
-        assert(visibleRect.width.isNormal && visibleRect.height.isNormal,
-               "You cannot safely scale an image with nonNormal width or height")
-        var scaledImageRect = CGRect.zero
-
-        let imageAspectRatio = image.size.width / image.size.height
-        let canvasAspectRatio = visibleRect.width / visibleRect.height
-
-        var aspectRatio: CGFloat
-
-        if imageAspectRatio > canvasAspectRatio {
-            aspectRatio = visibleRect.height / image.size.height
-        } else {
-            aspectRatio = visibleRect.width / image.size.width
-        }
-
-        scaledImageRect.size.width = image.size.width * aspectRatio
-        scaledImageRect.size.height = image.size.height * aspectRatio
-        scaledImageRect.origin.x = (visibleRect.width - scaledImageRect.size.width) / 2.0
-        scaledImageRect.origin.y = (visibleRect.height - scaledImageRect.size.height) / 2.0
-        
-        return scaledImageRect
-    }
-    
+enum PhotoViewerUIHelper {    
     static func visibleImageRect(container: UIView, contentMode: PhotoViewImageContentMode, imageView: UIImageView) -> CGRect {
 
         var visibleRect: CGRect
         switch contentMode {
         case .scaleAspectFit:
-            visibleRect = rectforImage(in: imageView)
+            visibleRect = imageView.image?.size.aspectFitRect(for: imageView.bounds.size) ?? .zero
 
         case .scaleAspectFill:
             visibleRect = container.convert(container.bounds, to: imageView)
@@ -51,10 +26,52 @@ enum PhotoViewerUIHelper {
         let translateT = CGAffineTransform(translationX: 0, y: view.bounds.height)
         return scaleT.concatenating(translateT)
     }
+}
+
+extension CGSize {
+    func aspectFitRect(for size: CGSize) -> CGRect {
+        let aspectFitSize = self.aspectFitSize(for: size)
+        let xPos = (size.width - aspectFitSize.width) / 2
+        let yPos = (size.height - aspectFitSize.height) / 2
+        let rect = CGRect(x: xPos, y: yPos, width: aspectFitSize.width, height: aspectFitSize.height)
+        return rect
+    }
     
-    private static func rectforImage(in imageView: UIImageView) -> CGRect {
-        guard let image = imageView.image else { return .zero }
-        let rect = AVMakeRect(aspectRatio: image.size, insideRect: imageView.bounds)
+    func aspectFillRect(for size: CGSize) -> CGRect {
+        let aspectFillSize = self.aspectFillSize(for: size)
+        let xPos = (size.width - aspectFillSize.width) / 2
+        let yPos = (size.height - aspectFillSize.height) / 2
+        let rect = CGRect(x: xPos, y: yPos, width: aspectFillSize.width, height: aspectFillSize.height)
         return rect
     }
 }
+
+extension CGSize {
+    func aspectFitSize(for size: CGSize) -> CGSize {
+        let mW = size.width / self.width;
+        let mH = size.height / self.height;
+        
+        var result = size
+        if (mH < mW) {
+            result.width = mH * self.width;
+        } else if (mW < mH) {
+            result.height = mW * self.height;
+        }
+        
+        return result
+    }
+    
+    func aspectFillSize(for size: CGSize) -> CGSize {
+        let mW = size.width / self.width;
+        let mH = size.height / self.height;
+        
+        var result = size
+        if (mH > mW) {
+            result.width = mH * self.width;
+        } else if (mW > mH) {
+            result.height = mW * self.height;
+        }
+        return result
+    }
+}
+

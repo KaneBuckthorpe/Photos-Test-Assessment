@@ -13,7 +13,7 @@ enum UserPhotosThumbnailsProviderError: Error {
     case phAssetNotFound
 }
 
-class UserPhotosListProvider: PhotosGridImagesProvider {
+class UserPhotosListProvider: PhotosGridImagesService {
     let cache: PHCachingImageManager
     
     private lazy var allPhotos: PHFetchResultCollection = {
@@ -31,12 +31,12 @@ class UserPhotosListProvider: PhotosGridImagesProvider {
         self.cache = cache
     }
     
-    func fetchPhotoIdentifiers() async throws -> [String] {
+    func loadPhotoIdentifiers() async throws -> [String] {
         try await requestPhotosAccess()
         return photoIdentifiers
     }
 
-    func imageForItem(_ identifier: String, targetSize: CGSize) async throws -> (UIImage?) {
+    func image(for identifier: String, targetSize: CGSize) async throws -> (UIImage?) {
         guard let asset = allPhotos.first(where: { $0.localIdentifier == identifier }) else {
             throw UserPhotosThumbnailsProviderError.phAssetNotFound
         }

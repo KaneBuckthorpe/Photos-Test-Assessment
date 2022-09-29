@@ -7,6 +7,7 @@
 
 import UIKit
 
+@MainActor
 enum ImageSizeScaler {
     static func imageSize(for view: UIView) -> CGSize {
         let viewSize = view.bounds.size
