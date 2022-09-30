@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6F02F8B528E66620004A007E /* CGSize+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F02F8B428E66620004A007E /* CGSize+.swift */; };
 		6F40DB6A28D6EADC00FB290E /* UICollectionViewDiffableDataSource+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F40DB6928D6EADC00FB290E /* UICollectionViewDiffableDataSource+.swift */; };
 		6F76F9B228B1C35900C82164 /* UICollectionViewCompositionalLayout+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F76F9B128B1C35900C82164 /* UICollectionViewCompositionalLayout+.swift */; };
 		6F76F9B528B28C2900C82164 /* UserPhotosListProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F76F9B428B28C2900C82164 /* UserPhotosListProvider.swift */; };
@@ -52,6 +53,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6F02F8B428E66620004A007E /* CGSize+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGSize+.swift"; sourceTree = "<group>"; };
 		6F40DB6928D6EADC00FB290E /* UICollectionViewDiffableDataSource+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionViewDiffableDataSource+.swift"; sourceTree = "<group>"; };
 		6F76F9B128B1C35900C82164 /* UICollectionViewCompositionalLayout+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionViewCompositionalLayout+.swift"; sourceTree = "<group>"; };
 		6F76F9B428B28C2900C82164 /* UserPhotosListProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserPhotosListProvider.swift; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 				6FCFCC6028B1A0E400500695 /* UIViewController+.swift */,
 				6F76F9B128B1C35900C82164 /* UICollectionViewCompositionalLayout+.swift */,
 				6F40DB6928D6EADC00FB290E /* UICollectionViewDiffableDataSource+.swift */,
+				6F02F8B428E66620004A007E /* CGSize+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -395,6 +398,7 @@
 				6F76F9B228B1C35900C82164 /* UICollectionViewCompositionalLayout+.swift in Sources */,
 				6FCFCC5B28B1A03400500695 /* NSLayoutDimension+.swift in Sources */,
 				6F40DB6A28D6EADC00FB290E /* UICollectionViewDiffableDataSource+.swift in Sources */,
+				6F02F8B528E66620004A007E /* CGSize+.swift in Sources */,
 				6FCE517E28DD9BA700CA2D51 /* PHFetchResultCollection.swift in Sources */,
 				6FCFCC6128B1A0E500500695 /* UIViewController+.swift in Sources */,
 			);
